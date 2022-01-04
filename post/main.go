@@ -19,6 +19,13 @@ type request struct {
 
 func Guardar() gin.HandlerFunc {
 	return func(ctxt *gin.Context) {
+		token := ctxt.GetHeader("token")
+		if token != "12345" {
+			ctxt.JSON(http.StatusUnauthorized, gin.H{
+				"error": "token inválido",
+			})
+			return
+		}
 		var req request
 		if err := ctxt.ShouldBindJSON(&req); err != nil {
 			ctxt.JSON(http.StatusBadRequest, gin.H{
