@@ -6,15 +6,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var products []request
-var lastID int
-
 type request struct {
 	ID       int     `json:"id"`
 	Nombre   string  `json:"nombre"`
 	Tipo     string  `json:"tipo"`
 	Cantidad int     `json:"cantidad"`
 	Precio   float64 `json:"precio"`
+}
+
+var products []request
+var lastID int
+
+func main() {
+	router := gin.Default()
+	pr := router.Group("/productos")
+	pr.GET("/", Listar)
+	pr.POST("/", Guardar())
+
+	router.Run()
 }
 
 func Guardar() gin.HandlerFunc {
@@ -40,10 +49,6 @@ func Guardar() gin.HandlerFunc {
 	}
 }
 
-func main() {
-	router := gin.Default()
-	pr := router.Group("/productos")
-	pr.POST("/", Guardar())
-
-	router.Run()
+func Listar(ctxt *gin.Context) {
+	ctxt.JSON(http.StatusOK, products)
 }
